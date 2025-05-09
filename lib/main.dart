@@ -8,7 +8,8 @@ var kColorScheme = ColorScheme.fromSeed(
     seedColor: Colors.white,
     surface: Colors.white,
     onSurface: const Color.fromRGBO(87, 91, 95, 1),
-    primaryContainer: const Color.fromRGBO(249, 249, 249, 1));
+    primaryContainer: const Color.fromRGBO(249, 249, 249, 1),
+    onPrimary: const Color.fromRGBO(79, 97, 211, 1));
 
 // choosing a color scheme for dark mode
 var kDarkColorScheme = ColorScheme.fromSeed(
@@ -16,7 +17,8 @@ var kDarkColorScheme = ColorScheme.fromSeed(
     seedColor: Colors.black,
     surface: const Color.fromRGBO(31, 31, 31, 1),
     onSurface: const Color.fromRGBO(255, 255, 255, 1),
-    primaryContainer: const Color.fromRGBO(35, 35, 35, 1));
+    primaryContainer: const Color.fromRGBO(35, 35, 35, 1),
+    onPrimary: const Color.fromRGBO(79, 97, 211, 1));
 
 void main() {
   // This makes the orientation of the device to be fixed
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // choosing theme based of the systems theme
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: const FirstScreen(),
     );
   }
