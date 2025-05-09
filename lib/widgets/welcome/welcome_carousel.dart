@@ -2,21 +2,22 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/data/welcome_messages.dart';
+import 'package:handyman/screens/auth/auth_screen.dart';
 
-class WelcomeCarousel extends StatefulWidget {
-  const WelcomeCarousel({super.key});
+class WelcomeCarousel extends StatelessWidget {
+  const WelcomeCarousel(
+      {super.key,
+      required this.activeIndex,
+      required this.buttonCarouselController,
+      required this.onPageChanged,
+      required this.paginateBack,
+      required this.paginateForward});
 
-  @override
-  State<WelcomeCarousel> createState() {
-    return _WelcomecarouselState();
-  }
-}
-
-class _WelcomecarouselState extends State<WelcomeCarousel> {
-  final CarouselSliderController buttonCarouselController =
-      CarouselSliderController();
-
-  var _activeIndex = 0;
+  final int activeIndex;
+  final CarouselSliderController buttonCarouselController;
+  final void Function(int index) onPageChanged;
+  final void Function() paginateBack;
+  final void Function() paginateForward;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +27,7 @@ class _WelcomecarouselState extends State<WelcomeCarousel> {
         CarouselSlider(
           carouselController: buttonCarouselController,
           options: CarouselOptions(
-            onPageChanged: (index, reason) => {
-              setState(() {
-                _activeIndex = index;
-              })
-            },
+            onPageChanged: (index, reason) => {onPageChanged(index)},
             autoPlay: false,
             height: 500,
             padEnds: false,
@@ -96,7 +93,7 @@ class _WelcomecarouselState extends State<WelcomeCarousel> {
                         : const EdgeInsets.only(right: 4),
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: i == _activeIndex
+                          color: i == activeIndex
                               ? const Color.fromRGBO(79, 97, 211, 1)
                               : const Color.fromRGBO(115, 121, 126, 1),
                           width: 1),
@@ -107,7 +104,7 @@ class _WelcomecarouselState extends State<WelcomeCarousel> {
                         width: 5,
                         height: 5,
                         decoration: BoxDecoration(
-                          color: i == _activeIndex
+                          color: i == activeIndex
                               ? const Color.fromRGBO(79, 97, 211, 1)
                               : Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(50),
@@ -122,13 +119,13 @@ class _WelcomecarouselState extends State<WelcomeCarousel> {
         const SizedBox(
           height: 50,
         ),
-        if (_activeIndex < 2)
+        if (activeIndex < 2)
           Row(
-            mainAxisAlignment: _activeIndex == 1
+            mainAxisAlignment: activeIndex == 1
                 ? MainAxisAlignment.spaceBetween
                 : MainAxisAlignment.end,
             children: [
-              if (_activeIndex == 1)
+              if (activeIndex == 1)
                 IconButton.outlined(
                   iconSize: 30,
                   color: const Color.fromRGBO(79, 97, 211, 1),
@@ -141,28 +138,13 @@ class _WelcomecarouselState extends State<WelcomeCarousel> {
                       ),
                     ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _activeIndex = 0;
-                      buttonCarouselController.animateToPage(0);
-                    });
-                  },
+                  onPressed: paginateBack,
                   icon: const Icon(FeatherIcons.arrowLeft),
                 ),
               IconButton.filled(
                 iconSize: 30,
                 color: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    if (_activeIndex == 1) {
-                      _activeIndex = 2;
-                      buttonCarouselController.animateToPage(2);
-                      return;
-                    }
-                    _activeIndex = 1;
-                    buttonCarouselController.animateToPage(1);
-                  });
-                },
+                onPressed: paginateForward,
                 style: IconButton.styleFrom(
                   backgroundColor: const Color.fromRGBO(79, 97, 211, 1),
                 ),
@@ -190,7 +172,16 @@ class _WelcomecarouselState extends State<WelcomeCarousel> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AuthScreen(
+                            headerText: 'Welcome Back!',
+                            subText: 'Sign in into your account',
+                          )),
+                );
+              },
               child: Text(
                 'Get Started',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
